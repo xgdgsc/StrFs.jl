@@ -162,3 +162,7 @@ isvalid(s::MStrF, i::Integer) = isvalid(String(s), i) # TODO improve
 function Base.setindex!(A::MStrF, X::MStrF, inds)
     return Base.setindex!(A.bytes, X.bytes, inds)
 end
+
+function Base.setindex!(A::MStrF, X::StrF, inds)
+    return Base.setindex!(A.bytes, X.bytes, inds)
+end
