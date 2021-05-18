@@ -6,7 +6,7 @@ using StaticArrays:SVector
 using UnPack:@unpack
 
 import Base: sizeof, read, write, isless, cmp, ==, typemin, repeat, promote_rule, show,
-    codeunit, hash, length
+    codeunit, hash, length,codeunits
 
 """
     StrF{S}(::String)
