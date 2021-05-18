@@ -2,8 +2,8 @@ module StrFs
 
 export StrF, @strf_str
 
-using StaticArrays: SVector
-using UnPack: @unpack
+using StaticArrays:SVector
+using UnPack:@unpack
 
 import Base: sizeof, read, write, isless, cmp, ==, typemin, repeat, promote_rule, show,
     codeunit, hash, length
@@ -47,7 +47,7 @@ end
 
 promote_rule(::Type{String}, ::Type{StrF{S}}) where S = String
 
-promote_rule(::Type{StrF{A}}, ::Type{StrF{B}}) where {A,B} = StrF{max(A,B)}
+promote_rule(::Type{StrF{A}}, ::Type{StrF{B}}) where {A,B} = StrF{max(A, B)}
 
 codeunit(::StrF{S}) where S = UInt8
 
@@ -96,15 +96,15 @@ function StrF(str::AbstractString)
     StrF{S}(SVector{S,UInt8}(codeunits(str)))
 end
 
-function cmp(a::StrF{A}, b::StrF{B}) where {A, B}
+function cmp(a::StrF{A}, b::StrF{B}) where {A,B}
     for (achar, bchar) in zip(a.bytes, b.bytes)
         (achar == bchar == 0x0) && return 0
         c = cmp(achar, bchar)
         c ≠ 0 && return c
     end
     A == B && return 0
-    (A < B && b.bytes[A+1] ≠ 0) && return -1
-    (A > B && a.bytes[B+1] ≠ 0) && return 1
+    (A < B && b.bytes[A + 1] ≠ 0) && return -1
+    (A > B && a.bytes[B + 1] ≠ 0) && return 1
     0
 end
 
@@ -120,7 +120,7 @@ typemin(::StrF{S}) where S = StrF(zeros(SVector{S}))
 
 length(str::StrF) = length(String(str)) # TODO improve
 
-function repeat(str::StrF{S}, ::Val{n}) where {S, n}
+function repeat(str::StrF{S}, ::Val{n}) where {S,n}
     @unpack bytes = str
     s = sizeof(str)
     vS = n * s
@@ -136,7 +136,7 @@ function repeat(str::StrF{S}, ::Val{n}) where {S, n}
     StrF{S}(SVector{S}(v))
 end
 
-function Base.iterate(str::StrF, state = (String(str), ))
+function Base.iterate(str::StrF, state=(String(str),))
     # NOTE: iteration implemented by converting to a string, and using it as the first
     # element of the state. The second element is the state for the iterator of the latter.
     y = iterate(state...)
@@ -149,5 +149,7 @@ Base.IteratorSize(::Type{<:StrF}) = Base.IteratorSize(String)
 Base.IteratorEltype(::Type{<:StrF}) = Base.IteratorEltype(String)
 
 Base.eltype(::Type{<:StrF}) = Base.eltype(String)
+
+include("MStrFs.jl")
 
 end # module
